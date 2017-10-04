@@ -12,3 +12,5 @@ User: were, phone: wqe, datetime: 3123, employee: Стригун,
     color: #7bd148. 
 User: ewrwr, phone: werwr, datetime: we3423, employee: Стригун,
     color: #7bd148. 
+User: edewd, phone: wedwed, datetime: 222, employee: Оболванщик,
+    color: #7bd148. 

@@ -21,9 +21,9 @@
   <div class="form-group">
   	<label>Выберете парикмахера</label>
     <select name="barber" class="form-control">
-	  <option>Стригун</option>
-	  <option>Оболванщик</option>
-	  <option>Опасный</option>
+	  <option <%= @barber == 'Стригун' ? 'selected' : '' %> >Стригун</option>
+	  <option <%= @barber == 'Оболванщик' ? 'selected' : '' %> >Оболванщик</option>
+	  <option <%= @barber == 'Опасный' ? 'selected' : '' %> >Опасный</option>
 	</select>
   </div>
 
