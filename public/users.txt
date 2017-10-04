@@ -16,3 +16,7 @@ User: edewd, phone: wedwed, datetime: 222, employee: Оболванщик,
     color: #7bd148. 
 User: Андрей, phone: 12324324, datetime: 12, employee: Оболванщик,
     color: #7ae7bf. 
+User: Dfdsfe, phone: 1232143, datetime: 2017/10/12 21:00, employee: Опасный,
+    color: #a4bdfc. 
+User: Gora, phone: 53456546, datetime: 2017/10/15 22:00, employee: Опасный,
+    color: #dc2127. 

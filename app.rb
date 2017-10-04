@@ -83,10 +83,16 @@ post '/visit' do
     Выбранный цвет покраски #{@color}."
 end
 
+get '/showusers' do
+  erb "HW"
+end
+
 def check_parameters_empty hh
   return hh.select {|key,_| params[key]  == ""}.values.join(", ")
 end
 
 def get_db 
-  return SQLite3::Database.new 'barbershop.db'
+  db = SQLite3::Database.new 'barbershop.db'
+  db.results_as_hash = true
+  return db
 end
