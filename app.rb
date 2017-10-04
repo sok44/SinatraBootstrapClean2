@@ -4,18 +4,19 @@ require 'sinatra/reloader'
 require 'sqlite3'
 
 configure do
-  @db = SQLite3::Database.new 'barbershop.db'
-  @db.execute 'CREATE TABLE IF NOT EXISTS
+
+  db = get_db
+  db.execute 'CREATE TABLE IF NOT EXISTS
     "Users"
     (
       "Id" INTEGER PRIMARY KEY AUTOINCREMENT, 
-      "Name" VARCHAR, 
+      "Username" VARCHAR, 
       "Phone" VARCHAR, 
       "Datestamp" VARCHAR, 
       "Barber" VARCHAR, 
       "Color" VARCHAR
     )'
-    
+
 end
 
 get '/' do
@@ -64,6 +65,18 @@ post '/visit' do
   f.write "User: #{@username}, phone: #{@phone}, datetime: #{@datetime}, employee: #{@barber},
     color: #{@color}. \n"
   f.close
+  
+  db = get_db
+  db.execute 'INSERT INTO 
+    Users
+    (
+      Username,
+      Phone,
+      Datestamp,
+      Barber,
+      Color
+    )
+    VALUES ( ?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
 
   erb "Вы записались! #{@username} спасибо что выбрали нас! 
     Ждем вас #{@datetime}. Ваш телефон #{@phone}. Ваш мастер #{@barber}. 
@@ -72,4 +85,8 @@ end
 
 def check_parameters_empty hh
   return hh.select {|key,_| params[key]  == ""}.values.join(", ")
+end
+
+def get_db 
+  return SQLite3::Database.new 'barbershop.db'
 end
