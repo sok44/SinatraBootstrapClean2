@@ -3,9 +3,19 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 
+def get_db() 
+  db = SQLite3::Database.new 'barbershop.db'
+  db.results_as_hash = true
+  return db
+end
+
+def check_parameters_empty hh
+  return hh.select {|key,_| params[key]  == ""}.values.join(", ")
+end
+
 configure do
 
-  db = get_db
+  db = get_db()
   db.execute 'CREATE TABLE IF NOT EXISTS
     "Users"
     (
@@ -16,6 +26,22 @@ configure do
       "Barber" VARCHAR, 
       "Color" VARCHAR
     )'
+
+  aRes = db.execute 'SELECT * FROM sqlite_master WHERE name =\'Barbers\' and type=\'table\''
+  
+  if aRes.count == 0 
+  
+    db.execute 'CREATE TABLE IF NOT EXISTS
+    "Barbers"
+    (
+      "Id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "Name" VARCHAR
+    )'
+    db.execute 'INSERT INTO Barbers (Name) VALUES(\'Опасный\')'
+    db.execute 'INSERT INTO Barbers (Name) VALUES(\'Стригун\')'
+    db.execute 'INSERT INTO Barbers (Name) VALUES(\'Оболванщик\')'
+
+  end
 
 end
 
@@ -30,6 +56,19 @@ end
 
 get '/visit' do
   erb :visit
+end
+
+get '/showusers' do
+  db = get_db
+  
+  string_out = ''
+  db.execute 'SELECT * FROM Users ORDER BY Id desc' do |row|
+    string_out = string_out + "Username: #{row['Username']}, 
+      Phone: #{row['Phone']}, Datestamp: #{row['Datestamp']},
+      Barber: #{row['Barber']}, Color: #{row['Color']} </br>"  
+  end
+  
+  erb string_out
 end
 
 post '/visit' do
@@ -87,12 +126,4 @@ get '/showusers' do
   erb "HW"
 end
 
-def check_parameters_empty hh
-  return hh.select {|key,_| params[key]  == ""}.values.join(", ")
-end
 
-def get_db 
-  db = SQLite3::Database.new 'barbershop.db'
-  db.results_as_hash = true
-  return db
-end
