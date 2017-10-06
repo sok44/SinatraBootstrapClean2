@@ -1,0 +1,24 @@
+<table class="table">
+  	<thead> 
+  		<tr>
+  			<th>Username</th>
+  			<th>Phone</th>
+  			<th>Datestamp</th>
+  			<th>Barber</th>
+  			<th>Color</th>
+    	</tr>
+	</thead>
+	<tbody>
+
+	<% @results.each do |row| %>
+		<tr>
+			<td><%= row['Username'] %></td>
+			<td><%= row['Phone'] %></td>
+			<td><%= row['Datestamp'] %></td>
+			<td><%= row['Barber'] %></td>
+			<td><%= row['Color'] %></td>
+		</tr>
+	<% end %>
+
+	</tbody>
+</table>

@@ -89,16 +89,13 @@ get '/visit' do
 end
 
 get '/showusers' do
+  
   db = get_db
   
-  string_out = ''
-  db.execute 'SELECT * FROM Users ORDER BY Id desc' do |row|
-    string_out = string_out + "Username: #{row['Username']}, 
-      Phone: #{row['Phone']}, Datestamp: #{row['Datestamp']},
-      Barber: #{row['Barber']}, Color: #{row['Color']} </br>"  
-  end
+  @results =  db.execute 'SELECT * FROM Users ORDER BY Id desc' 
   
-  erb string_out
+  erb :showusers
+
 end
 
 post '/visit' do
