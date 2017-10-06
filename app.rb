@@ -13,7 +13,34 @@ def check_parameters_empty hh
   return hh.select {|key,_| params[key]  == ""}.values.join(", ")
 end
 
+def get_barber_option selected_barber_id
+  
+  # <option <%= @barber == 'Стригун' ? 'selected' : '' %> >Стригун</option>
+  #  <option <%= @barber == 'Оболванщик' ? 'selected' : '' %> >Оболванщик</option>
+  #   <option <%= @barber == 'Опасный' ? 'selected' : '' %> >Опасный</option>
+
+  db = get_db
+
+  option_out = ''
+  flag_selected = ''
+
+  db.execute 'SELECT * FROM Barbers ORDER BY Name ' do |row|
+    
+    if selected_barber_id == row['Id']
+      flag_selected = 'selected'
+    else
+      flag_selected = ''
+    end
+
+    option_out = option_out + "<option value=#{row['Id']} #{flag_selected}> #{row['Name']} </option>"  
+  end
+
+  return option_out
+end
+
 configure do
+
+  
 
   db = get_db()
   db.execute 'CREATE TABLE IF NOT EXISTS
@@ -55,7 +82,10 @@ get '/about' do
 end
 
 get '/visit' do
+  
+  @option_out = get_barber_option 1
   erb :visit
+
 end
 
 get '/showusers' do
@@ -84,17 +114,19 @@ post '/visit' do
         datetime: 'Введите дату и время'}
   
   #@error = ''
-  #hh.each do |key, value|
+  #params.each do |key, value|
   #  #Если параметр пуст
    # if params[key] == ''
-   #   @error = @error + hh[key] + ' '
+   #   @error = @error + "key - #{key}; value - #{value}"
   #  end
- # end
+  #end
   
   @my_error = check_parameters_empty hh
 
   if @my_error != ''
     @error = @my_error
+    @option_out = get_barber_option @barber
+
     return erb :visit
   end
 
