@@ -27,29 +27,9 @@ def seed_db db, barbers
 
 end
 
-def get_barber_option selected_barber_id
-  
-  # <option <%= @barber == 'Стригун' ? 'selected' : '' %> >Стригун</option>
-  #  <option <%= @barber == 'Оболванщик' ? 'selected' : '' %> >Оболванщик</option>
-  #   <option <%= @barber == 'Опасный' ? 'selected' : '' %> >Опасный</option>
-
+def get_barbers
   db = get_db
-
-  option_out = ''
-  flag_selected = ''
-
-  db.execute 'SELECT * FROM Barbers ORDER BY Name ' do |row|
-    
-    if selected_barber_id == row['Id']
-      flag_selected = 'selected'
-    else
-      flag_selected = ''
-    end
-
-    option_out = option_out + "<option value=#{row['Id']} #{flag_selected}> #{row['Name']} </option>"  
-  end
-
-  return option_out
+  db.execute 'SELECT * FROM Barbers ORDER BY Name '
 end
 
 configure do
@@ -88,7 +68,9 @@ end
 
 get '/visit' do
   
-  @option_out = get_barber_option 1
+  @results =  get_barbers
+  @barber = 1
+
   erb :visit
 
 end
@@ -127,7 +109,8 @@ post '/visit' do
 
   if @my_error != ''
     @error = @my_error
-    @option_out = get_barber_option @barber
+
+    @results =  get_barbers
 
     return erb :visit
   end
