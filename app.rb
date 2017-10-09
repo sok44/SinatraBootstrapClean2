@@ -13,6 +13,20 @@ def check_parameters_empty hh
   return hh.select {|key,_| params[key]  == ""}.values.join(", ")
 end
 
+def is_barber_exists? db, name
+  db.execute('SELECT * FROM Barbers WHERE Name=?', [name]).length > 0
+end
+
+def seed_db db, barbers
+
+  barbers.each do |barber|
+    if !is_barber_exists? db, barber
+      db.execute 'INSERT INTO Barbers (Name) VALUES (?)', [barber]
+    end
+  end
+
+end
+
 def get_barber_option selected_barber_id
   
   # <option <%= @barber == 'Стригун' ? 'selected' : '' %> >Стригун</option>
@@ -40,36 +54,27 @@ end
 
 configure do
 
-  
-
   db = get_db()
   db.execute 'CREATE TABLE IF NOT EXISTS
-    "Users"
-    (
-      "Id" INTEGER PRIMARY KEY AUTOINCREMENT, 
-      "Username" VARCHAR, 
-      "Phone" VARCHAR, 
-      "Datestamp" VARCHAR, 
-      "Barber" VARCHAR, 
-      "Color" VARCHAR
-    )'
+  "Users"
+  (
+    "Id" INTEGER PRIMARY KEY AUTOINCREMENT, 
+    "Username" VARCHAR, 
+    "Phone" VARCHAR, 
+    "Datestamp" VARCHAR, 
+    "Barber" VARCHAR, 
+    "Color" VARCHAR
+  )'
 
-  aRes = db.execute 'SELECT * FROM sqlite_master WHERE name =\'Barbers\' and type=\'table\''
-  
-  if aRes.count == 0 
-  
-    db.execute 'CREATE TABLE IF NOT EXISTS
-    "Barbers"
-    (
-      "Id" INTEGER PRIMARY KEY AUTOINCREMENT,
-      "Name" VARCHAR
-    )'
-    db.execute 'INSERT INTO Barbers (Name) VALUES(\'Опасный\')'
-    db.execute 'INSERT INTO Barbers (Name) VALUES(\'Стригун\')'
-    db.execute 'INSERT INTO Barbers (Name) VALUES(\'Оболванщик\')'
+  db.execute 'CREATE TABLE IF NOT EXISTS
+  "Barbers"
+  (
+    "Id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "Name" VARCHAR
+  )'
 
-  end
-
+  seed_db db, ['Опасный', 'Стригун', 'Оболванщик']
+ 
 end
 
 get '/' do
